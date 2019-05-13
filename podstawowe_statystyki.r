@@ -4,6 +4,15 @@ key <- "***"
 kamp_id <- '***'
 
 
+# pobranie ID kampanii na koncie (pobiera listę ID wszystkich aktywnych kampanii na koncie). Możliwe dodatkowe filtrowanie (np. po domenie)
+
+URL_ID <- "http://api.semstorm.com/api-v3/monitoring/monitoring-campaign/get-list.json"
+POST_ID <- POST(URL_ID, content_type("application/json"), body = list(services_token = key, pager= list(items_per_page = 100, page = 0), status = "active"), encode = c("json"))
+pobierz_JSON_ID<-content(POST_ID, "text")
+przetworz_JSON_ID <-fromJSON(pobierz_JSON_ID, flatten = F)
+lista_ID_kampanii <- przetworz_JSON_ID$results$campaigns$id
+
+
 # dane szcz. kampanii
 
 w4<- paste("http://api.semstorm.com/api-v3/monitoring/monitoring-campaign/get-overview-data.json?services_token=", key, sep = "")
