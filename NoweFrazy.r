@@ -5,10 +5,10 @@
   library("openxlsx")
   library("dplyr")
   
-  key <- "rAM1Tm7joQPLAXNeMXwewkjij_9fxjh-6kEaUTMhPo4"
+  key <- "***"
   URL <-"http://api.semstorm.com/api-v3/explorer/explorer-keywords/get-data"
   ile_wynikow <- 100
-  domena <- array('kadromierz.pl')
+  domena <- array('***')
   rodzaj_slowa <- "new"
   
   # pierwsza pętla słowa new
