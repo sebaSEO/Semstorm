@@ -5,11 +5,54 @@
   library("openxlsx")
   library("dplyr")
   
-  key <- "***"
   URL <-"http://api.semstorm.com/api-v3/explorer/explorer-keywords/get-data"
   ile_wynikow <- 100
-  domena <- array('***')
-  rodzaj_slowa <- "new"
+  
+  
+  EntryBox <- function(label = 'Klucz', title = 'Podaj swój klucz API') {
+    tt <- tktoplevel()
+    tkwm.title(tt, title)   
+    done <- tclVar(0)
+    tkbind(tt,"<Destroy>", function() tclvalue(done) <- 2)
+    result <- tclVar("")
+    cancel.but <- tkbutton(tt, text='Zamknij', command=function() tclvalue(done) <- 2)
+    submit.but <- tkbutton(tt, text="Dodaj", command=function() tclvalue(done) <- 1)
+    tkgrid(tklabel(tt, text=label),  tkentry(tt, textvariable=result), pady=3, padx=3)
+    tkgrid(submit.but, cancel.but, pady=3, padx=3)
+    tkfocus(tt)
+    tkwait.variable(done)
+    if(tclvalue(done) != 1) result <- "" else result <- tclvalue(result)
+    tkdestroy(tt)
+    return(result)
+  }
+  
+  key <- EntryBox(label = 'Podaj swój klucz API '); x
+  #
+  
+  EntryBox <- function(label = 'Domena', title = 'Wpisz domenę') {
+    tt <- tktoplevel()
+    tkwm.title(tt, title)   
+    done <- tclVar(0)
+    tkbind(tt,"<Destroy>", function() tclvalue(done) <- 2)
+    result <- tclVar("")
+    cancel.but <- tkbutton(tt, text='Zamknij', command=function() tclvalue(done) <- 2)
+    submit.but <- tkbutton(tt, text="Dodaj", command=function() tclvalue(done) <- 1)
+    tkgrid(tklabel(tt, text=label),  tkentry(tt, textvariable=result), pady=3, padx=3)
+    tkgrid(submit.but, cancel.but, pady=3, padx=3)
+    tkfocus(tt)
+    tkwait.variable(done)
+    if(tclvalue(done) != 1) result <- "" else result <- tclvalue(result)
+    tkdestroy(tt)
+    return(result)
+  }
+  
+  domena <- EntryBox(label = 'Wpisz domenę'); x
+  
+  
+  domena <- array(domena)
+  
+  # dostępne rodzaje słowa new/all/lost
+  rodzaj_slowa <- "all"
   
   # pierwsza pętla słowa new
   
@@ -87,50 +130,53 @@
             frazy_new_Part)
   }
   
-  # wyliczanie ruchu na podstawie pozycji
+  # wyliczanie ruchu na podstawie pozycji wg. https://www.advancedwebranking.com/ctrstudy/
   
   
   for (i in 1:length(frazy_new_Full$pozycja))
     if (frazy_new_Full[i, 3] == 10) {
       frazy_new_Full$Ruch[i] <-
-        round(as.numeric(as.character(frazy_new_Full[i, 4])) * 0.3258)
+        round(as.numeric(as.character(frazy_new_Full[i, 4])) * 0.0112)
     } else if (frazy_new_Full[i, 3] == 9) {
       frazy_new_Full$Ruch[i] <-
-        round(as.numeric(as.character(frazy_new_Full[i, 4])) * 0.1669)
+        round(as.numeric(as.character(frazy_new_Full[i, 4])) * 0.0136)
     } else if (round(frazy_new_Full[i, 3] == 8)) {
       frazy_new_Full$Ruch[i] <-
-        round(as.numeric(as.character(frazy_new_Full[i, 4])) * 0.1034)
+        round(as.numeric(as.character(frazy_new_Full[i, 4])) * 0.0168)
     } else if (round(frazy_new_Full[i, 3] == 7)) {
       frazy_new_Full$Ruch[i] <-
-        round(as.numeric(as.character(frazy_new_Full[i, 4])) * 0.0724)
+        round(as.numeric(as.character(frazy_new_Full[i, 4])) * 0.0217)
     } else if (round(frazy_new_Full[i, 3] == 6)) {
       frazy_new_Full$Ruch[i] <-
-        round(as.numeric(as.character(frazy_new_Full[i, 4])) * 0.0527)
+        round(as.numeric(as.character(frazy_new_Full[i, 4])) * 0.0301)
     } else if (round(frazy_new_Full[i, 3] == 5)) {
       frazy_new_Full$Ruch[i] <-
-        round(as.numeric(as.character(frazy_new_Full[i, 4])) * 0.0393)
+        round(as.numeric(as.character(frazy_new_Full[i, 4])) * 0.0421)
     } else if (round(frazy_new_Full[i, 3] == 4)) {
       frazy_new_Full$Ruch[i] <-
-        round(as.numeric(as.character(frazy_new_Full[i, 4])) * 0.0302)
+        round(as.numeric(as.character(frazy_new_Full[i, 4])) * 0.0618)
     } else if (round(frazy_new_Full[i, 3] == 3)) {
       frazy_new_Full$Ruch[i] <-
-        round(as.numeric(as.character(frazy_new_Full[i, 4])) * 0.0235)
+        round(as.numeric(as.character(frazy_new_Full[i, 4])) * 0.0989)
     } else if (round(frazy_new_Full[i, 3] == 2)) {
       frazy_new_Full$Ruch[i] <-
-        round(as.numeric(as.character(frazy_new_Full[i, 4])) * 0.0186)
+        round(as.numeric(as.character(frazy_new_Full[i, 4])) * 0.1529)
     } else if (round(frazy_new_Full[i, 3] == 1)) {
       frazy_new_Full$Ruch[i] <-
-        round(as.numeric(as.character(frazy_new_Full[i, 4])) * 0.0153)
+        round(as.numeric(as.character(frazy_new_Full[i, 4])) * 0.3128)
     } else {
       frazy_new_Full$Ruch[i] <- 0
     }
+  
+  frazy_new_Full <-frazy_new_Full[order(-frazy_new_Full$Ruch), ]
   
   frazy_new_Full_Grupowanie <-
     frazy_new_Full %>% group_by(lp) %>% summarise(
       ile_fraz = n(),
       ile_Ruchu = sum(Ruch),
       sr_pozycja = mean(as.numeric(pozycja)),
-      ile_wyszukan = sum(as.numeric(`ilośc wyszukań`))
+      ile_wyszukan = sum(as.numeric(`ilośc wyszukań`)),
+      Data = Sys.Date()
     )
   
   frazy_new_Full_Grupowanie <-frazy_new_Full_Grupowanie[order(-frazy_new_Full_Grupowanie$ile_wyszukan), ]
