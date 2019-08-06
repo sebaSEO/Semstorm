@@ -1,0 +1,40 @@
+# widoczność w Top 50, widocznośc w Top 10, estymacja ruchu z SEO dla wybranej domeny
+
+
+library("httr")
+library("jsonlite")
+library("openxlsx")
+library("dplyr")
+
+URL <-"http://api.semstorm.com/api-v3/explorer/explorer-visibility/get-data"
+
+# Daty dla których pobieramy dane (od kiedy do kiedy)
+od <- "20190101"
+do <- "20190601"
+
+# tu wstawiam klucz API semstorm
+
+key <- ' '
+
+domena <- ' '
+domena <- array(domena)
+
+# pierwsza pętla słowa new
+
+POST_1 <-
+  POST(
+    URL,
+    content_type("application/json"),
+    body = list(
+      services_token = key,
+      domains = domena,
+      result_type = "organic",
+      gap = "daily",
+      date = list(min = od, max = do)
+      ),
+encode = c("json")
+)
+
+# przetworzenie pierwszego JSON-a
+JSON <-
+  POST_1 %>% content("text") %>% fromJSON(flatten = F)
