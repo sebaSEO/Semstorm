@@ -8,9 +8,9 @@ library("dplyr")
 
 URL <-"http://api.semstorm.com/api-v3/explorer/explorer-visibility/get-data"
 
-# Daty dla których pobieramy dane (od kiedy do kiedy)
-od <- "20190101"
-do <- "20190601"
+# Daty dla których pobieramy dane (od kiedy do kiedy) np. 20190101
+od <- ""
+do <- " "
 
 # tu wstawiam klucz API semstorm
 
@@ -19,7 +19,7 @@ key <- ' '
 domena <- ' '
 domena <- array(domena)
 
-# pierwsza pętla słowa new
+# zapytanie POST
 
 POST_1 <-
   POST(
@@ -35,6 +35,26 @@ POST_1 <-
 encode = c("json")
 )
 
-# przetworzenie pierwszego JSON-a
+# przetworzenie powstałego JSON-a
 JSON <-
   POST_1 %>% content("text") %>% fromJSON(flatten = F)
+
+# zebranie danych do data frame
+a<- JSON[[2]][[1]]
+dane_witryny.frazy_top<-c(1:length(a))
+dane_witryny.frazy_all<-c(1:length(a))
+dane_witryny.widocznosc<-c(1:length(a))
+dane_witryny.ruch<-c(1:length(a))
+dane_witryny.data<-c(1:length(a))
+
+for (i in 1:length(a)) {
+dane_witryny.data[i] <- names(a[i])
+dane_witryny.frazy_top[i] <-a[[i]][[2]]
+dane_witryny.frazy_all[i] <-a[[i]][[1]]
+dane_witryny.widocznosc[i] <-a[[i]][[4]]
+dane_witryny.ruch[i] <-a[[i]][[3]]
+
+}
+dane3<- data.frame(dane_witryny.data, dane_witryny.frazy_top,dane_witryny.frazy_all,dane_witryny.widocznosc,dane_witryny.ruch)
+
+colnames(dane3) <- c("data","frazy_top","frazy_all","widocznosc","ruch")
